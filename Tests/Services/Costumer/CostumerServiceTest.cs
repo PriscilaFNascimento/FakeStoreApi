@@ -33,7 +33,7 @@ namespace Tests.Services
                 .ReturnsAsync((Costumer)null);
 
             // Act
-            await _sut.CreateOrUpdateCostumerAsync(request);
+            await _sut.CreateOrUpdateCostumerAsync(request, CancellationToken.None);
 
             // Assert
             _costumerRepositoryMock.Verify(x => x.AddAsync(
@@ -56,7 +56,7 @@ namespace Tests.Services
                 .ReturnsAsync(existingCostumer);
 
             // Act
-            await _sut.CreateOrUpdateCostumerAsync(request);
+            await _sut.CreateOrUpdateCostumerAsync(request, CancellationToken.None);
 
             // Assert
             _costumerRepositoryMock.Verify(x => x.UpdateAsync(
@@ -74,12 +74,14 @@ namespace Tests.Services
             CreateUpdateCostumerDto request = null;
 
             // Act
-            Func<Task> act = () => _sut.CreateOrUpdateCostumerAsync(request);
+            Func<Task> act = () => _sut.CreateOrUpdateCostumerAsync(request, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<ArgumentNullException>()
                 .WithParameterName("request")
                 .WithMessage("*value cannot be null*");
         }
+
+        //TODO: Add theory tests
     }
 }

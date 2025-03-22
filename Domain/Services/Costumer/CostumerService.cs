@@ -12,9 +12,10 @@ namespace Domain.Services
             _costumerRepository = costumerRepository;
         }
 
-        public async Task CreateOrUpdateCostumerAsync(CreateUpdateCostumerDto request, CancellationToken cancellationToken = default)
+        public async Task CreateOrUpdateCostumerAsync(CreateUpdateCostumerDto request, CancellationToken cancellationToken)
         {
             //TODO: Implement domain validations and throw a domain exception
+            //TODO: Add data annotations to the CreateUpdateCostumerDto instead of doing the validation here
             if (request is null || request.Email is null)
                 throw new ArgumentNullException(nameof(request));
 
