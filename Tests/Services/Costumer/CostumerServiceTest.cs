@@ -4,6 +4,7 @@ using Domain.Repositories;
 using Domain.Services;
 using Domain.Entities;
 using Moq;
+using FluentAssertions;
 
 namespace Tests.Services
 {
@@ -20,6 +21,7 @@ namespace Tests.Services
             _costumerRepositoryMock = fixture.CostumerRepositoryMock;
             _autoFixture = fixture.AutoFixture;
             _sut = new CostumerService(_costumerRepositoryMock.Object);
+            _fixture.ResetMocks(); // Reset mocks before each test
         }
 
         [Fact]
@@ -72,12 +74,12 @@ namespace Tests.Services
             CreateUpdateCostumerDto request = null;
 
             // Act
-            await _sut.CreateOrUpdateCostumerAsync(request);
+            Func<Task> act = () => _sut.CreateOrUpdateCostumerAsync(request);
 
             // Assert
-            _costumerRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Costumer>()), Times.Never);
-            _costumerRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<Costumer>()), Times.Never);
-            _costumerRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Never);
+            await act.Should().ThrowAsync<ArgumentNullException>()
+                .WithParameterName("request")
+                .WithMessage("*value cannot be null*");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Domain.Dtos;
+using Domain.Entities;
 using Domain.Repositories;
 
 namespace Domain.Services
@@ -11,9 +12,26 @@ namespace Domain.Services
             _costumerRepository = costumerRepository;
         }
 
-        public Task CreateOrUpdateCostumerAsync(CreateUpdateCostumerDto request, CancellationToken cancellationToken = default)
+        public async Task CreateOrUpdateCostumerAsync(CreateUpdateCostumerDto request, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            //TODO: Implement domain validations and throw a domain exception
+            if (request is null || request.Email is null)
+                throw new ArgumentNullException(nameof(request));
+
+            Costumer costumer = await _costumerRepository.GetByEmailAsync(request.Email);
+
+            if(costumer is null)
+            {
+                costumer = new Costumer(request.Name, request.Email);
+                await _costumerRepository.AddAsync(costumer);
+            }
+            else
+            {
+                costumer.Name = request.Name;
+                await _costumerRepository.UpdateAsync(costumer);
+            }
+
+            await _costumerRepository.SaveChangesAsync();
         }
     }
 }

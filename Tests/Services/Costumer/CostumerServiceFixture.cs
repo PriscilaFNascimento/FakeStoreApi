@@ -14,5 +14,10 @@ namespace Tests.Services
             CostumerRepositoryMock = new Mock<ICostumerRepository>();
             AutoFixture = new Fixture();
         }
+
+        public void ResetMocks()
+        {
+            CostumerRepositoryMock.Reset();
+        }
     }
 }
