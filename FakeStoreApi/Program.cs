@@ -1,4 +1,6 @@
 using Domain.Repositories;
+using Domain.Services.Costumer;
+using Domain.Services.Order;
 using Persistence.Extensions;
 using Persistence.Repositories;
 
@@ -23,6 +25,8 @@ builder.Services.AddCors(options =>
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
 
 //dependency injection containers
+builder.Services.AddScoped<ICostumerService, CostumerService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<ICostumerRepository, CostumerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderProductRepository, OrderProductRepository>();
