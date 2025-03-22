@@ -10,7 +10,7 @@ namespace Persistence.Configurations
         {
             builder.ToTable(nameof(CartItem));
 
-            builder.HasKey(ci => new { ci.CostumerId, ci.ProductName });
+            builder.HasKey(ci => ci.Id);
 
             builder.Property(ci => ci.ProductName)
                 .IsRequired();

@@ -14,6 +14,7 @@ namespace Domain.Dtos
 
     public class CartItemResponseDto
     {
+        public Guid Id { get; set; }
         public Guid CostumerId { get; set; }
         public string ProductName { get; set; }
         public int Quantity { get; set; }

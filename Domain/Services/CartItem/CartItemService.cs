@@ -27,7 +27,7 @@ namespace Domain.Services
             if (request.ProductPrice <= 0)
                 throw new ArgumentException("ProductPrice must be greater than zero", nameof(request));
 
-            Costumer costumer = await costumerRepository.GetByIdAsync(userId);
+            Costumer costumer = await costumerRepository.GetByIdAsync(userId, cancellationToken);
 
             if(costumer is null)
                 throw new ArgumentException("Costumer not found", nameof(userId));

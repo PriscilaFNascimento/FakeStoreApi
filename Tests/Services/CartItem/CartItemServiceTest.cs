@@ -33,7 +33,7 @@ namespace Tests.Services
             var costumer = _autoFixture.Create<Costumer>();
             var request = _autoFixture.Create<CreateCartItemDto>();
 
-            _costumerRepositoryMock.Setup(x => x.GetByIdAsync(costumer.Id))
+            _costumerRepositoryMock.Setup(x => x.GetByIdAsync(costumer.Id, CancellationToken.None))
                 .ReturnsAsync(costumer);
             _cartItemRepositoryMock.Setup(x => x.GetByCostumerIdAndProductNameAsync(costumer.Id, request.ProductName, CancellationToken.None))
                 .ReturnsAsync((CartItem)null);
@@ -67,7 +67,7 @@ namespace Tests.Services
 
             _cartItemRepositoryMock.Setup(x => x.GetByCostumerIdAndProductNameAsync(costumer.Id, request.ProductName, CancellationToken.None))
                 .ReturnsAsync(existingItem);
-            _costumerRepositoryMock.Setup(x => x.GetByIdAsync(costumer.Id))
+            _costumerRepositoryMock.Setup(x => x.GetByIdAsync(costumer.Id, CancellationToken.None))
                 .ReturnsAsync(costumer);
 
             // Act
@@ -87,7 +87,7 @@ namespace Tests.Services
         {
             // Arrange
             var costumer = _autoFixture.Create<Costumer>();
-            _costumerRepositoryMock.Setup(x => x.GetByIdAsync(costumer.Id))
+            _costumerRepositoryMock.Setup(x => x.GetByIdAsync(costumer.Id, CancellationToken.None))
                 .ReturnsAsync(costumer);
             CreateCartItemDto request = null;
 
@@ -99,6 +99,95 @@ namespace Tests.Services
                 .WithParameterName("request")
                 .WithMessage("*request cannot be null*");
             _cartItemRepositoryMock.Verify(x => x.AddAsync(It.IsAny<CartItem>(), CancellationToken.None), Times.Never);
+            _cartItemRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<CartItem>(), CancellationToken.None), Times.Never);
+            _cartItemRepositoryMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Never);
+        }
+
+        [Fact]
+        public async Task UpdateCartItemQuantityAsync_WithValidData_ShouldUpdateQuantity()
+        {
+            // Arrange
+            var cartItemId = Guid.NewGuid();
+            var cartItem = _autoFixture.Build<CartItem>()
+                .With(x => x.Id, cartItemId)
+                .Create();
+            int newQuantity = 5;
+
+            _cartItemRepositoryMock.Setup(x => x.GetByIdAsync(cartItemId, CancellationToken.None))
+                .ReturnsAsync(cartItem);
+
+            // Act
+            await _sut.UpdateCartItemQuantityAsync(cartItemId, newQuantity, CancellationToken.None);
+
+            // Assert
+            _cartItemRepositoryMock.Verify(x => x.UpdateAsync(
+                It.Is<CartItem>(ci =>
+                    ci.Id == cartItemId &&
+                    ci.Quantity == newQuantity), CancellationToken.None), Times.Once);
+            _cartItemRepositoryMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateCartItemQuantityAsync_WithZeroQuantity_ShouldDeleteCartItem()
+        {
+            // Arrange
+            var cartItemId = Guid.NewGuid();
+            var cartItem = _autoFixture.Build<CartItem>()
+                .With(x => x.Id, cartItemId)
+                .Create();
+            int newQuantity = 0;
+
+            _cartItemRepositoryMock.Setup(x => x.GetByIdAsync(cartItemId, CancellationToken.None))
+                .ReturnsAsync(cartItem);
+
+            // Act
+            await _sut.UpdateCartItemQuantityAsync(cartItemId, newQuantity, CancellationToken.None);
+
+            // Assert
+            _cartItemRepositoryMock.Verify(x => x.DeleteAsync(cartItem, CancellationToken.None), Times.Once);
+            _cartItemRepositoryMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
+            _cartItemRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<CartItem>(), CancellationToken.None), Times.Never);
+        }
+
+        [Fact]
+        public async Task UpdateCartItemQuantityAsync_WithInvalidCartItemId_ShouldThrowArgumentException()
+        {
+            // Arrange
+            var cartItemId = Guid.NewGuid();
+            int newQuantity = 5;
+
+            _cartItemRepositoryMock.Setup(x => x.GetByIdAsync(cartItemId, CancellationToken.None))
+                .ReturnsAsync((CartItem)null);
+
+            // Act
+            Func<Task> act = () => _sut.UpdateCartItemQuantityAsync(cartItemId, newQuantity, CancellationToken.None);
+
+            // Assert
+            await act.Should().ThrowAsync<ArgumentException>()
+                .WithMessage("Cart item not found");
+            _cartItemRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<CartItem>(), CancellationToken.None), Times.Never);
+            _cartItemRepositoryMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Never);
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        public async Task UpdateCartItemQuantityAsync_WithInvalidQuantity_ShouldThrowArgumentException(int invalidQuantity)
+        {
+            // Arrange
+            var cartItemId = Guid.NewGuid();
+            var cartItem = _autoFixture.Build<CartItem>()
+                .With(x => x.Id, cartItemId)
+                .Create();
+
+            _cartItemRepositoryMock.Setup(x => x.GetByIdAsync(cartItemId, CancellationToken.None))
+                .ReturnsAsync(cartItem);
+
+            // Act
+            Func<Task> act = () => _sut.UpdateCartItemQuantityAsync(cartItemId, invalidQuantity, CancellationToken.None);
+
+            // Assert
+            await act.Should().ThrowAsync<ArgumentException>()
+                .WithMessage("Quantity should'nt be negative");
             _cartItemRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<CartItem>(), CancellationToken.None), Times.Never);
             _cartItemRepositoryMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Never);
         }

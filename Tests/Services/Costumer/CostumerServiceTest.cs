@@ -39,8 +39,8 @@ namespace Tests.Services
             _costumerRepositoryMock.Verify(x => x.AddAsync(
                 It.Is<Costumer>(c =>
                     c.Name == request.Name &&
-                    c.Email == request.Email)), Times.Once);
-            _costumerRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+                    c.Email == request.Email), CancellationToken.None), Times.Once);
+            _costumerRepositoryMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
         }
 
         [Fact]
@@ -63,8 +63,8 @@ namespace Tests.Services
                 It.Is<Costumer>(c =>
                     c.Id == existingCostumer.Id &&
                     c.Name == request.Name &&
-                    c.Email == request.Email)), Times.Once);
-            _costumerRepositoryMock.Verify(x => x.SaveChangesAsync(), Times.Once);
+                    c.Email == request.Email), CancellationToken.None), Times.Once);
+            _costumerRepositoryMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
         }
 
         [Fact]
