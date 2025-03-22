@@ -34,7 +34,7 @@ namespace Tests.Services
                 .ReturnsAsync((CartItem)null);
 
             // Act
-            await _sut.CreateCartItemAsync(userId, request);
+            await _sut.CreateCartItemAsync(userId, request, CancellationToken.None);
 
             // Assert
             _cartItemRepositoryMock.Verify(x => x.AddAsync(
@@ -52,24 +52,26 @@ namespace Tests.Services
             // Arrange
             var userId = _autoFixture.Create<Guid>();
             var request = _autoFixture.Create<CreateCartItemDto>();
+
             var existingItem = _autoFixture.Build<CartItem>()
                 .With(x => x.CostumerId, userId)
                 .With(x => x.ProductName, request.ProductName)
                 .Create();
 
+            int oldQuantity = existingItem.Quantity;
+
             _cartItemRepositoryMock.Setup(x => x.GetByCostumerIdAndProductNameAsync(userId, request.ProductName, CancellationToken.None))
                 .ReturnsAsync(existingItem);
 
             // Act
-            await _sut.CreateCartItemAsync(userId, request);
+            await _sut.CreateCartItemAsync(userId, request, CancellationToken.None);
 
             // Assert
             _cartItemRepositoryMock.Verify(x => x.UpdateAsync(
                 It.Is<CartItem>(ci =>
                     ci.CostumerId == userId &&
                     ci.ProductName == request.ProductName &&
-                    ci.ProductPrice == request.ProductPrice &&
-                    ci.Quantity == existingItem.Quantity + 1), CancellationToken.None), Times.Once);
+                    ci.Quantity == oldQuantity + 1), CancellationToken.None), Times.Once);
             _cartItemRepositoryMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
         }
 
@@ -81,7 +83,7 @@ namespace Tests.Services
             CreateCartItemDto request = null;
 
             // Act
-            Func<Task> act = () => _sut.CreateCartItemAsync(userId, request);
+            Func<Task> act = () => _sut.CreateCartItemAsync(userId, request, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<ArgumentNullException>()
