@@ -4,6 +4,6 @@ namespace Domain.Services
 {
     public interface ICostumerService
     {
-        Task CreateOrUpdateCostumerAsync(CreateUpdateCostumerDto request, CancellationToken cancellationToken = default);
+        Task CreateOrUpdateCostumerAsync(CreateUpdateCostumerDto request, CancellationToken cancellationToken);
     }
 }
