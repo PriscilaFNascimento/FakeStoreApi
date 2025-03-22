@@ -15,7 +15,7 @@ namespace Persistence.Configurations
             builder.Property(ci => ci.ProductName)
                 .IsRequired();
 
-            builder.Property(ci => ci.ProductQuantity)
+            builder.Property(ci => ci.Quantity)
                 .IsRequired();
 
             builder.Property(ci => ci.ProductPrice)
