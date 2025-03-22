@@ -1,4 +1,6 @@
+using Domain.Repositories;
 using Persistence.Extensions;
+using Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +19,14 @@ builder.Services.AddCors(options =>
       });
 });
 
+//adds DbContext
 builder.Services.AddPersistenceInfrastructure(builder.Configuration);
+
+//dependency injection containers
+builder.Services.AddScoped<ICostumerRepository, CostumerRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderProductRepository, OrderProductRepository>();
+builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
 
 var app = builder.Build();
 
