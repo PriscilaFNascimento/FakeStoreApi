@@ -17,7 +17,7 @@ namespace Persistence.Repositories
             _dbSet = context.Set<CartItem>();
         }
 
-        public async Task<IEnumerable<CartItemResponseDto>> GetByCostumerIdAsync(Guid costumerId)
+        public async Task<IEnumerable<CartItemResponseDto>> GetByCostumerIdAsync(Guid costumerId, CancellationToken cancellationToken)
         {
             var query = from c in _dbSet
                         where c.CostumerId == costumerId
@@ -32,26 +32,31 @@ namespace Persistence.Repositories
             return await query.ToListAsync();
         }
 
-        public async Task AddAsync(CartItem cartItem)
+        public async Task<CartItem> GetByCostumerIdAndProductNameAsync(Guid costumerId, string productName, CancellationToken cancellationToken)
         {
-            await _dbSet.AddAsync(cartItem);
+            return await _dbSet.FirstOrDefaultAsync(c => c.CostumerId == costumerId && c.ProductName == productName, cancellationToken);
         }
 
-        public async Task UpdateAsync(CartItem cartItem)
+        public async Task AddAsync(CartItem cartItem, CancellationToken cancellationToken)
+        {
+            await _dbSet.AddAsync(cartItem, cancellationToken);
+        }
+
+        public async Task UpdateAsync(CartItem cartItem, CancellationToken cancellationToken)
         {
             _dbSet.Update(cartItem);
             await Task.CompletedTask;
         }
 
-        public async Task DeleteAsync(CartItem cartItem)
+        public async Task DeleteAsync(CartItem cartItem, CancellationToken cancellationToken)
         {
             _dbSet.Remove(cartItem);
             await Task.CompletedTask;
         }
 
-        public async Task SaveChangesAsync()
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
         {
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 } 
