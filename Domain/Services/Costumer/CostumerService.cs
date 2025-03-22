@@ -1,12 +1,14 @@
 ﻿using Domain.Dtos;
+using Domain.Repositories;
 
 namespace Domain.Services
 {
     public class CostumerService : ICostumerService
     {
-        public Task CreateOrUpdateCostumerAsync(CreateUpdateCostumerDto request)
+        private readonly ICostumerRepository _costumerRepository;
+        public CostumerService(ICostumerRepository costumerRepository)
         {
-            throw new NotImplementedException();
+            _costumerRepository = costumerRepository;
         }
 
         public Task CreateOrUpdateCostumerAsync(CreateUpdateCostumerDto request, CancellationToken cancellationToken = default)
