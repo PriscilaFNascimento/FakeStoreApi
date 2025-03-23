@@ -6,11 +6,11 @@ namespace FakeStoreApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CostumerController : ControllerBase
+    public class CostumersController : ControllerBase
     {
         private readonly ICostumerService _costumerService;
 
-        public CostumerController(ICostumerService costumerService)
+        public CostumersController(ICostumerService costumerService)
         {
             _costumerService = costumerService;
         }

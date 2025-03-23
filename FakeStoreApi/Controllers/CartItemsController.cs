@@ -6,11 +6,11 @@ namespace FakeStoreApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CartItemController : ControllerBase
+    public class CartItemsController : ControllerBase
     {
         private readonly ICartItemService _cartItemService;
 
-        public CartItemController(ICartItemService cartItemService)
+        public CartItemsController(ICartItemService cartItemService)
         {
             _cartItemService = cartItemService;
         }
