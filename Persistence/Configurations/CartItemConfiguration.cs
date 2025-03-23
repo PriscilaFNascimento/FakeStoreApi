@@ -12,10 +12,19 @@ namespace Persistence.Configurations
 
             builder.HasKey(ci => ci.Id);
 
-            builder.Property(ci => ci.ProductName)
+            builder.Property(ci => ci.ProductId)
                 .IsRequired();
 
-            builder.Property(ci => ci.Quantity)
+            builder.Property(ci => ci.ProductTitle)
+                .IsRequired();
+
+            builder.Property(ci => ci.ProductDescription)
+                .IsRequired();
+
+            builder.Property(ci => ci.ProductCategory)
+                .IsRequired();
+
+            builder.Property(ci => ci.ProductImage)
                 .IsRequired();
 
             builder.Property(ci => ci.ProductPrice)

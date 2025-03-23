@@ -27,22 +27,25 @@ namespace Domain.Services
             if (request is null)
                 throw new ArgumentNullException(nameof(request), "request cannot be null");
 
-            if (string.IsNullOrWhiteSpace(request.ProductName))
-                throw new ArgumentException("ProductName cannot be null, empty or whitespace", nameof(request));
-
-            if (request.ProductPrice <= 0)
-                throw new ArgumentException("ProductPrice must be greater than zero", nameof(request));
+            if (request.ProductPrice < 0)
+                throw new ArgumentException("ProductPrice must be greater than or equals to zero", nameof(request));
 
             Costumer costumer = await costumerRepository.GetByIdAsync(userId, cancellationToken);
 
             if(costumer is null)
                 throw new ArgumentException("Costumer not found", nameof(userId));
 
-            var existingItem = await _cartItemRepository.GetByCostumerIdAndProductNameAsync(userId, request.ProductName, cancellationToken);
+            var existingItem = await _cartItemRepository.GetByCostumerIdAndProductIdAsync(userId, request.ProductId, cancellationToken);
 
             if (existingItem is null)
             {
-                var cartItem = new CartItem(userId, request.ProductName, request.ProductPrice);
+                var cartItem = new CartItem(userId,
+                    request.ProductId,
+                    request.ProductTitle,
+                    request.ProductPrice,
+                    request.ProductDescription,
+                    request.ProductCategory,
+                    request.ProductImage);
                 await _cartItemRepository.AddAsync(cartItem, cancellationToken);
             }
             else

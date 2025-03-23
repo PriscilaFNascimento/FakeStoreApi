@@ -1,20 +1,29 @@
 ﻿namespace Domain.Entities
 {
-    public class CartItem : BaseEntity
+    public class CartItem : BaseEntityWithBaseProduct
     {
         public Guid CostumerId { get; private set; }
         public virtual Costumer Costumer { get; set; }
-        public string ProductName { get; private set; }
         public int Quantity { get; private set; }
-        public decimal ProductPrice { get; private set; }
 
         public decimal TotalPrice => Quantity * ProductPrice;
-
-        public CartItem(Guid costumerId, string productName, decimal productPrice)
+        
+        public CartItem(
+            Guid costumerId,
+            int productId,
+            string productTitle,
+            decimal productPrice,
+            string productDescription,
+            string productCategory,
+            string productImage) : base(
+                productId,
+                productTitle,
+                productPrice,
+                productDescription,
+                productCategory,
+                productImage)
         {
             CostumerId = costumerId;
-            ProductName = productName;
-            ProductPrice = productPrice;
             Quantity = 1;
         }
 
@@ -22,5 +31,5 @@
         {
             Quantity = quantity;
         }
-    }
+}
 }

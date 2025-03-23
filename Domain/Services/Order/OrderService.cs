@@ -46,7 +46,16 @@ namespace Domain.Services
             await _orderRepository.AddAsync(order, cancellationToken);
 
             //TODO: Create a extension method to convert CartItem to OrderProduct
-            var orderProducts = cartItems.Select(ci => new OrderProduct(order.Id, ci.ProductName,  ci.Quantity, ci.ProductPrice));
+            var orderProducts = cartItems.Select(ci => new OrderProduct(order.Id, 
+                ci.Quantity,
+                ci.ProductId,
+                ci.ProductTitle,
+                ci.ProductPrice,
+                ci.ProductDescription,
+                ci.ProductCategory,
+                ci.ProductImage
+            ));
+
             await _orderProductRepository.AddRangeAsync(orderProducts, cancellationToken);
 
             _cartItemRepository.DeleteAllByCostumerId(costumerId);

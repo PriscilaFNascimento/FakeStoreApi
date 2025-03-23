@@ -41,7 +41,7 @@ namespace Tests.Services
 
             _costumerRepositoryMock.Setup(x => x.GetByIdAsync(costumer.Id, CancellationToken.None))
                 .ReturnsAsync(costumer);
-            _cartItemRepositoryMock.Setup(x => x.GetByCostumerIdAndProductNameAsync(costumer.Id, request.ProductName, CancellationToken.None))
+            _cartItemRepositoryMock.Setup(x => x.GetByCostumerIdAndProductIdAsync(costumer.Id, request.ProductId, CancellationToken.None))
                 .ReturnsAsync((CartItem)null);
 
             // Act
@@ -51,8 +51,12 @@ namespace Tests.Services
             _cartItemRepositoryMock.Verify(x => x.AddAsync(
                 It.Is<CartItem>(ci =>
                     ci.CostumerId == costumer.Id &&
-                    ci.ProductName == request.ProductName &&
+                    ci.ProductId == request.ProductId &&
+                    ci.ProductTitle == request.ProductTitle &&
                     ci.ProductPrice == request.ProductPrice &&
+                    ci.ProductDescription == request.ProductDescription &&
+                    ci.ProductCategory == request.ProductCategory &&
+                    ci.ProductImage == request.ProductImage &&
                     ci.Quantity == 1), CancellationToken.None), Times.Once);
             _cartItemRepositoryMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
         }
@@ -63,12 +67,19 @@ namespace Tests.Services
             // Arrange
             var costumer = _autoFixture.Create<Costumer>();
             var request = _autoFixture.Create<CreateCartItemDto>();
-
-            var existingItem = new CartItem(costumer.Id, request.ProductName, _autoFixture.Create<decimal>());
+            
+            var existingItem = new CartItem(costumer.Id,
+                request.ProductId,
+                _autoFixture.Create<string>(),
+                _autoFixture.Create<decimal>(),
+                _autoFixture.Create<string>(),
+                _autoFixture.Create<string>(),
+                _autoFixture.Create<string>()
+                );
 
             int oldQuantity = existingItem.Quantity;
 
-            _cartItemRepositoryMock.Setup(x => x.GetByCostumerIdAndProductNameAsync(costumer.Id, request.ProductName, CancellationToken.None))
+            _cartItemRepositoryMock.Setup(x => x.GetByCostumerIdAndProductIdAsync(costumer.Id, request.ProductId, CancellationToken.None))
                 .ReturnsAsync(existingItem);
             _costumerRepositoryMock.Setup(x => x.GetByIdAsync(costumer.Id, CancellationToken.None))
                 .ReturnsAsync(costumer);
@@ -78,10 +89,7 @@ namespace Tests.Services
 
             // Assert
             _cartItemRepositoryMock.Verify(x => x.UpdateAsync(
-                It.Is<CartItem>(ci =>
-                    ci.CostumerId == costumer.Id &&
-                    ci.ProductName == request.ProductName &&
-                    ci.Quantity == oldQuantity + 1), CancellationToken.None), Times.Once);
+                It.Is<CartItem>(ci => ci.Quantity == oldQuantity + 1), CancellationToken.None), Times.Once);
             _cartItemRepositoryMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Once);
         }
 
@@ -198,8 +206,12 @@ namespace Tests.Services
             var expectedResponse = cartItems.Select(ci => new CartItemResponseDto 
             { 
                 Id = ci.Id,
-                ProductName = ci.ProductName,
+                ProductId = ci.ProductId,
+                ProductTitle = ci.ProductTitle,
                 ProductPrice = ci.ProductPrice,
+                ProductDescription = ci.ProductDescription,
+                ProductCategory = ci.ProductCategory,
+                ProductImage = ci.ProductImage,
                 Quantity = ci.Quantity
             }).ToList();
 
