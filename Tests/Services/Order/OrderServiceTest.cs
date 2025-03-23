@@ -31,7 +31,7 @@ namespace Tests.Services
             _costumerRepositoryMock = fixture.CostumerRepositoryMock;
             _orderProductRepositoryMock = fixture.OrderProductRepositoryMock;
             _autoFixture = fixture.AutoFixture;
-            _sut = new OrderService(_orderRepositoryMock.Object, _costumerRepositoryMock.Object, _cartItemRepositoryMock.Object);
+            _sut = new OrderService(_orderRepositoryMock.Object, _costumerRepositoryMock.Object, _cartItemRepositoryMock.Object, _orderProductRepositoryMock.Object);
             _fixture.ResetMocks();
         }
 
