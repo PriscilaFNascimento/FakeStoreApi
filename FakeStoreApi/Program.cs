@@ -31,6 +31,10 @@ builder.Services.AddScoped<ICostumerRepository, CostumerRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderProductRepository, OrderProductRepository>();
 builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+
+// register HttpClient
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
