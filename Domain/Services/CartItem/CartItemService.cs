@@ -14,13 +14,14 @@ namespace Domain.Services
             this.costumerRepository = costumerRepository;
         }
 
-        public Task<IEnumerable<CartItemResponseDto>> GetAllCartItemsByCostumerIdAsync(Guid costumerIdAsync, CancellationToken cancellationToken)
+        public async Task<IEnumerable<CartItemResponseDto>> GetAllCartItemsByCostumerIdAsync(Guid costumerIdAsync, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _cartItemRepository.GetAllByCostumerIdAsync(costumerIdAsync, cancellationToken);
         }
 
         public async Task CreateCartItemAsync(Guid userId, CreateCartItemDto request, CancellationToken cancellationToken)
         {
+            
             //TODO: Implement domain validations and throw a domain exception
             //TODO: Add data annotations to the CreateCartItemDto instead of doing the validation here
             if (request is null)
