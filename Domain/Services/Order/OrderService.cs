@@ -18,12 +18,17 @@ namespace Domain.Services
             _cartItemRepository = cartItemRepository;
             _orderProductRepository = orderProductRepository;
         }
-        public Task<IEnumerable<OrderResponseDto>> GetAllOrdersByCostumerId(Guid costumerId, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<OrderResponseDto>> GetAllOrdersByCostumerId(Guid costumerId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return _orderRepository.GetAllByCostumerIdAsync(costumerId, cancellationToken);
         }
 
-        public async Task CreateOrderFromCostumerCartAsync(Guid costumerId, CancellationToken cancellationToken = default)
+        public async Task<IEnumerable<OrderProductResponseDto>> GetAllOrderProductsByOrderId(Guid orderId, CancellationToken cancellationToken)
+        {
+            return await _orderProductRepository.GetByOrderIdAsync(orderId, cancellationToken);
+        }
+
+        public async Task CreateOrderFromCostumerCartAsync(Guid costumerId, CancellationToken cancellationToken)
         {
             var costumer = await _costumerRepository.GetByIdAsync(costumerId, cancellationToken);
 

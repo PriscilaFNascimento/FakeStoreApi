@@ -1,3 +1,4 @@
+using Domain.Dtos;
 using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -16,12 +17,19 @@ namespace Persistence.Repositories
             _dbSet = context.Set<OrderProduct>();
         }
 
-        public async Task<IEnumerable<OrderProduct>> GetByOrderIdAsync(Guid orderId, CancellationToken cancellationToken)
+        public async Task<IEnumerable<OrderProductResponseDto>> GetByOrderIdAsync(Guid orderId, CancellationToken cancellationToken)
         {
-            return await _dbSet
-                .Where(op => op.OrderId == orderId)
-                .Include(op => op.Order)
-                .ToListAsync(cancellationToken);
+            var query = from op in _dbSet
+                        where op.OrderId == orderId
+                        select new OrderProductResponseDto
+                        {
+                            OrderId = op.OrderId,
+                            ProductName = op.ProductName,
+                            ProductQuantity = op.ProductQuantity,
+                            ProductPrice = op.ProductPrice
+                        };
+
+            return await query.ToListAsync();
         }
 
         public async Task AddAsync(OrderProduct orderProduct, CancellationToken cancellationToken)

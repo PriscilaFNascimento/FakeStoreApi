@@ -33,6 +33,26 @@ namespace FakeStoreApi.Controllers
             }
         }
 
+        [HttpGet("{orderId}/products")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<OrderProductResponseDto>>> GetOrderProductsByOrderId(
+            Guid customerId,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                var orders = await _orderService.GetAllOrderProductsByOrderId(customerId, cancellationToken);
+                return Ok(orders);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "An error occurred while retrieving orders", error = ex.Message });
+            }
+        }
+
+
+
         [HttpPost("customer/{customerId}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
