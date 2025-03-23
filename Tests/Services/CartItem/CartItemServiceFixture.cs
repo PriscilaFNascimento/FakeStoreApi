@@ -20,6 +20,7 @@ namespace Tests.Services
         public void ResetMocks()
         {
             CartItemRepositoryMock.Reset();
+            CostumerRepositoryMock.Reset();
         }
     }
 }
