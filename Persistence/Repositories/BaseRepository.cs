@@ -2,7 +2,6 @@ using Domain.Entities;
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Persistence.Contexts;
-using System.Linq.Expressions;
 
 namespace Persistence.Repositories
 {
@@ -32,8 +31,14 @@ namespace Persistence.Repositories
             await _dbSet.AddAsync(entity, cancellationToken);
         }
 
+        public async Task AddRangeAsync(IEnumerable<T> entities, CancellationToken cancellationToken)
+        {
+            await _dbSet.AddRangeAsync(entities, cancellationToken);
+        }
+
         public virtual async Task UpdateAsync(T entity, CancellationToken cancellationToken)
         {
+            entity.LastUpdatedAt = DateTime.Now;
             _dbSet.Update(entity);
             await Task.CompletedTask;
         }

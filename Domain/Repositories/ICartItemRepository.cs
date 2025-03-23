@@ -7,5 +7,6 @@ namespace Domain.Repositories
     {
         Task<List<CartItemResponseDto>> GetAllByCostumerIdAsync(Guid costumerId, CancellationToken cancellationToken);
         Task<CartItem> GetByCostumerIdAndProductNameAsync(Guid costumerId, string productName, CancellationToken cancellationToken);
+        public void DeleteAllByCostumerId(Guid costumerId);
     }
 } 

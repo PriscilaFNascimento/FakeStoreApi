@@ -3,7 +3,9 @@ namespace Domain.Dtos
     public class OrderResponseDto
     {
         public Guid Id { get; set; }
-        public string Number { get; set; }
-        public decimal Total { get; set; }
+        public int Number { get; set; }
+        public decimal TotalAmount { get; set; }
+        public int TotalProductsQuantity { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 } 
