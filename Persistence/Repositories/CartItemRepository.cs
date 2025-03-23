@@ -6,14 +6,12 @@ using Persistence.Contexts;
 
 namespace Persistence.Repositories
 {
-    public class CartItemRepository : ICartItemRepository
+    public class CartItemRepository : BaseRepository<CartItem>, ICartItemRepository
     {
-        private readonly FakeStoreApiDbContext _context;
         private readonly DbSet<CartItem> _dbSet;
 
-        public CartItemRepository(FakeStoreApiDbContext context)
+        public CartItemRepository(FakeStoreApiDbContext context) : base(context)
         {
-            _context = context;
             _dbSet = context.Set<CartItem>();
         }
 
@@ -23,40 +21,19 @@ namespace Persistence.Repositories
                         where c.CostumerId == costumerId
                         select new CartItemResponseDto
                         {
+                            Id = c.Id,
                             CostumerId = c.CostumerId,
                             ProductName = c.ProductName,
                             Quantity = c.Quantity,
                             ProductPrice = c.ProductPrice
                         };
 
-            return await query.ToListAsync();
+            return await query.ToListAsync(cancellationToken);
         }
 
         public async Task<CartItem> GetByCostumerIdAndProductNameAsync(Guid costumerId, string productName, CancellationToken cancellationToken)
         {
             return await _dbSet.FirstOrDefaultAsync(c => c.CostumerId == costumerId && c.ProductName == productName, cancellationToken);
-        }
-
-        public async Task AddAsync(CartItem cartItem, CancellationToken cancellationToken)
-        {
-            await _dbSet.AddAsync(cartItem, cancellationToken);
-        }
-
-        public async Task UpdateAsync(CartItem cartItem, CancellationToken cancellationToken)
-        {
-            _dbSet.Update(cartItem);
-            await Task.CompletedTask;
-        }
-
-        public async Task DeleteAsync(CartItem cartItem, CancellationToken cancellationToken)
-        {
-            _dbSet.Remove(cartItem);
-            await Task.CompletedTask;
-        }
-
-        public async Task SaveChangesAsync(CancellationToken cancellationToken)
-        {
-            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 } 

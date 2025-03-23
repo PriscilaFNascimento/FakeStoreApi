@@ -1,6 +1,6 @@
 ﻿namespace Domain.Entities
 {
-    public class CartItem
+    public class CartItem : BaseEntity
     {
         public Guid CostumerId { get; set; }
         public virtual Costumer Costumer { get; set; }

@@ -24,15 +24,15 @@ namespace Domain.Services
             if(costumer is null)
             {
                 costumer = new Costumer(request.Name, request.Email);
-                await _costumerRepository.AddAsync(costumer);
+                await _costumerRepository.AddAsync(costumer, cancellationToken);
             }
             else
             {
                 costumer.Name = request.Name;
-                await _costumerRepository.UpdateAsync(costumer);
+                await _costumerRepository.UpdateAsync(costumer, cancellationToken);
             }
 
-            await _costumerRepository.SaveChangesAsync();
+            await _costumerRepository.SaveChangesAsync(cancellationToken);
         }
     }
 }

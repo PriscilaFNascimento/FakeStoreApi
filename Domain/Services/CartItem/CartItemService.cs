@@ -27,7 +27,7 @@ namespace Domain.Services
             if (request.ProductPrice <= 0)
                 throw new ArgumentException("ProductPrice must be greater than zero", nameof(request));
 
-            Costumer costumer = await costumerRepository.GetByIdAsync(userId);
+            Costumer costumer = await costumerRepository.GetByIdAsync(userId, cancellationToken);
 
             if(costumer is null)
                 throw new ArgumentException("Costumer not found", nameof(userId));
@@ -53,9 +53,27 @@ namespace Domain.Services
             throw new NotImplementedException();
         }
 
-        public Task UpdateCartItemQuantityAsync(Guid cartItemId, int newQuantity, CancellationToken cancellationToken)
+        public async Task UpdateCartItemQuantityAsync(Guid cartItemId, int newQuantity, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (newQuantity < 0)
+                throw new ArgumentException("Quantity should'nt be negative");
+
+            var cartItem = await _cartItemRepository.GetByIdAsync(cartItemId, cancellationToken);
+
+            if (cartItem is null)
+                throw new ArgumentException("Cart item not found");
+
+            if (newQuantity == 0)
+            {
+                await _cartItemRepository.DeleteAsync(cartItem, cancellationToken);
+            }
+            else
+            {
+                cartItem.Quantity = newQuantity;
+                await _cartItemRepository.UpdateAsync(cartItem, cancellationToken);
+            }
+
+            await _cartItemRepository.SaveChangesAsync(cancellationToken);
         }
     }
 }
