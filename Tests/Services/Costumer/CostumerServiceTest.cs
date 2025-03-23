@@ -5,6 +5,7 @@ using Domain.Services;
 using Domain.Entities;
 using Moq;
 using FluentAssertions;
+using System.Xml.Linq;
 
 namespace Tests.Services
 {
@@ -29,13 +30,25 @@ namespace Tests.Services
         {
             // Arrange
             var request = _autoFixture.Create<CreateUpdateCostumerDto>();
+            var expectedCostumer = new Costumer(request.Name, request.Email);
+            var expectedResponse = new CostumerResponseDto
+            {
+                Id = expectedCostumer.Id,
+                Name = request.Name,
+                Email = request.Email
+            };
+
             _costumerRepositoryMock.Setup(x => x.GetByEmailAsync(request.Email))
                 .ReturnsAsync((Costumer)null);
 
+            _costumerRepositoryMock.Setup(x => x.AddAsync(It.IsAny<Costumer>(), CancellationToken.None))
+                .Returns(Task.FromResult(expectedCostumer));
+
             // Act
-            await _sut.CreateOrUpdateCostumerAsync(request, CancellationToken.None);
+            var result = await _sut.CreateOrUpdateCostumerAsync(request, CancellationToken.None);
 
             // Assert
+            result.Should().BeEquivalentTo(expectedResponse, options => options.Excluding(x => x.Id));
             _costumerRepositoryMock.Verify(x => x.AddAsync(
                 It.Is<Costumer>(c =>
                     c.Name == request.Name &&
@@ -48,17 +61,22 @@ namespace Tests.Services
         {
             // Arrange
             var request = _autoFixture.Create<CreateUpdateCostumerDto>();
-            var existingCostumer = _autoFixture.Build<Costumer>()
-                .With(x => x.Email, request.Email)
-                .Create();
+            var existingCostumer = new Costumer(_autoFixture.Create<string>(), request.Email);
+            var expectedResponse = new CostumerResponseDto()
+            {
+                Id = existingCostumer.Id, 
+                Name = request.Name, 
+                Email = request.Email
+            };
 
             _costumerRepositoryMock.Setup(x => x.GetByEmailAsync(request.Email))
                 .ReturnsAsync(existingCostumer);
 
             // Act
-            await _sut.CreateOrUpdateCostumerAsync(request, CancellationToken.None);
+            var result = await _sut.CreateOrUpdateCostumerAsync(request, CancellationToken.None);
 
             // Assert
+            result.Should().BeEquivalentTo(expectedResponse);
             _costumerRepositoryMock.Verify(x => x.UpdateAsync(
                 It.Is<Costumer>(c =>
                     c.Id == existingCostumer.Id &&
