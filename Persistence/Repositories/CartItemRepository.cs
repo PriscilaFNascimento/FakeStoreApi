@@ -35,5 +35,11 @@ namespace Persistence.Repositories
         {
             return await _dbSet.FirstOrDefaultAsync(c => c.CostumerId == costumerId && c.ProductName == productName, cancellationToken);
         }
+
+        public void DeleteAllByCostumerId(Guid costumerId)
+        {
+            var cartItems = _dbSet.Where(c => c.CostumerId == costumerId);
+            _dbSet.RemoveRange(cartItems);
+        }
     }
 } 

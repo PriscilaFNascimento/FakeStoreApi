@@ -16,22 +16,27 @@ namespace Persistence.Repositories
             _dbSet = context.Set<OrderProduct>();
         }
 
-        public async Task<IEnumerable<OrderProduct>> GetByOrderIdAsync(Guid orderId)
+        public async Task<IEnumerable<OrderProduct>> GetByOrderIdAsync(Guid orderId, CancellationToken cancellationToken)
         {
             return await _dbSet
                 .Where(op => op.OrderId == orderId)
                 .Include(op => op.Order)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task AddAsync(OrderProduct orderProduct)
+        public async Task AddAsync(OrderProduct orderProduct, CancellationToken cancellationToken)
         {
-            await _dbSet.AddAsync(orderProduct);
+            await _dbSet.AddAsync(orderProduct, cancellationToken);
         }
 
-        public async Task SaveChangesAsync()
+        public async Task AddRangeAsync(IEnumerable<OrderProduct> orderProducts, CancellationToken cancellationToken)
         {
-            await _context.SaveChangesAsync();
+            await _dbSet.AddRangeAsync(orderProducts, cancellationToken);
+        }
+
+        public async Task SaveChangesAsync(CancellationToken cancellationToken)
+        {
+            await _context.SaveChangesAsync(cancellationToken);
         }
     }
 } 
