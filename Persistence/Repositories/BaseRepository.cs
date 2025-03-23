@@ -38,7 +38,7 @@ namespace Persistence.Repositories
 
         public virtual async Task UpdateAsync(T entity, CancellationToken cancellationToken)
         {
-            entity.LastUpdatedAt = DateTime.Now;
+            entity.LastUpdatedAt = DateTime.UtcNow;
             _dbSet.Update(entity);
             await Task.CompletedTask;
         }

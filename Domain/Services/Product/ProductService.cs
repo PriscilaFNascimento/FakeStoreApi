@@ -24,7 +24,9 @@ namespace Domain.Services
                 if(response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync(cancellationToken);
-                    return JsonSerializer.Deserialize<IEnumerable<ProductResponseDto>>(content);
+
+                    //The deserialization didn't work, so I'm going to check the content
+                    return JsonSerializer.Deserialize<IEnumerable<ProductResponseDto>>(content, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true});
                 }
 
                 return Enumerable.Empty<ProductResponseDto>();
@@ -44,7 +46,7 @@ namespace Domain.Services
                 if(response.IsSuccessStatusCode) 
                 {
                     var content = await response.Content.ReadAsStringAsync(cancellationToken);
-                    return JsonSerializer.Deserialize<ProductResponseDto>(content);
+                    return JsonSerializer.Deserialize<ProductResponseDto>(content, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
                 }
 
                 //TODO: Return a message to the client when product is not found

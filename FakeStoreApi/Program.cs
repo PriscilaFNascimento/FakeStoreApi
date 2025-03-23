@@ -2,6 +2,7 @@ using Domain.Repositories;
 using Domain.Services;
 using Persistence.Extensions;
 using Persistence.Repositories;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,12 @@ builder.Services.AddCors(options =>
              .AllowAnyHeader()
              .AllowAnyMethod();
       });
+});
+
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
 //adds DbContext
