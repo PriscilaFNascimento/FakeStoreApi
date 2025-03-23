@@ -23,17 +23,21 @@ namespace Persistence.Repositories
                         {
                             Id = c.Id,
                             CostumerId = c.CostumerId,
-                            ProductName = c.ProductName,
-                            Quantity = c.Quantity,
-                            ProductPrice = c.ProductPrice
+                            ProductTitle = c.ProductTitle,
+                            ProductId = c.ProductId,
+                            ProductCategory = c.ProductCategory,
+                            ProductDescription = c.ProductDescription,
+                            ProductImage = c.ProductImage,
+                            ProductPrice = c.ProductPrice,
+                            Quantity = c.Quantity
                         };
 
             return await query.ToListAsync(cancellationToken);
         }
 
-        public async Task<CartItem> GetByCostumerIdAndProductNameAsync(Guid costumerId, string productName, CancellationToken cancellationToken)
+        public async Task<CartItem> GetByCostumerIdAndProductIdAsync(Guid costumerId, int productId, CancellationToken cancellationToken)
         {
-            return await _dbSet.FirstOrDefaultAsync(c => c.CostumerId == costumerId && c.ProductName == productName, cancellationToken);
+            return await _dbSet.FirstOrDefaultAsync(c => c.CostumerId == costumerId && c.ProductId == productId, cancellationToken);
         }
 
         public void DeleteAllByCostumerId(Guid costumerId)

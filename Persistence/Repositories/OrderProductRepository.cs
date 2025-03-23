@@ -24,9 +24,13 @@ namespace Persistence.Repositories
                         select new OrderProductResponseDto
                         {
                             OrderId = op.OrderId,
-                            ProductName = op.ProductName,
-                            ProductQuantity = op.ProductQuantity,
-                            ProductPrice = op.ProductPrice
+                            ProductId = op.ProductId,
+                            ProductTitle = op.ProductTitle,
+                            ProductDescription = op.ProductDescription,
+                            ProductCategory = op.ProductCategory,
+                            ProductPrice = op.ProductPrice,
+                            ProductImage = op.ProductImage,
+                            ProductQuantity = op.ProductQuantity
                         };
 
             return await query.ToListAsync();

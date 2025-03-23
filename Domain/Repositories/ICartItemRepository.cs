@@ -6,7 +6,7 @@ namespace Domain.Repositories
     public interface ICartItemRepository : IBaseRepository<CartItem>
     {
         Task<List<CartItemResponseDto>> GetAllByCostumerIdAsync(Guid costumerId, CancellationToken cancellationToken);
-        Task<CartItem> GetByCostumerIdAndProductNameAsync(Guid costumerId, string productName, CancellationToken cancellationToken);
+        Task<CartItem> GetByCostumerIdAndProductIdAsync(Guid costumerId, int productId, CancellationToken cancellationToken);
         public void DeleteAllByCostumerId(Guid costumerId);
     }
 } 

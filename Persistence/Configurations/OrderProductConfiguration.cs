@@ -10,9 +10,21 @@ namespace Persistence.Configurations
         {
             builder.ToTable(nameof(OrderProduct));
 
-            builder.HasKey(op => new { op.OrderId, op.ProductName });
+            builder.HasKey(op => new { op.OrderId, op.ProductId });
 
-            builder.Property(op => op.ProductName)
+            builder.Property(ci => ci.ProductId)
+                .IsRequired();
+
+            builder.Property(ci => ci.ProductTitle)
+                .IsRequired();
+
+            builder.Property(ci => ci.ProductDescription)
+                .IsRequired();
+
+            builder.Property(ci => ci.ProductCategory)
+                .IsRequired();
+
+            builder.Property(ci => ci.ProductImage)
                 .IsRequired();
 
             builder.Property(op => op.ProductQuantity)
