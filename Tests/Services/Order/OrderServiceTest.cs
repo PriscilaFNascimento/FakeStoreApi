@@ -46,7 +46,7 @@ namespace Tests.Services
                 .ReturnsAsync(expectedOrders);
 
             // Act
-            var result = await _sut.GetAllOrdersByCostumerId(costumerId);
+            var result = await _sut.GetAllOrdersByCostumerId(costumerId, CancellationToken.None);
 
             // Assert
             result.Should().BeEquivalentTo(expectedOrders);
@@ -64,7 +64,7 @@ namespace Tests.Services
                 .ReturnsAsync(emptyList);
 
             // Act
-            var result = await _sut.GetAllOrdersByCostumerId(costumerId);
+            var result = await _sut.GetAllOrdersByCostumerId(costumerId, CancellationToken.None);
 
             // Assert
             result.Should().BeEmpty();
@@ -86,7 +86,7 @@ namespace Tests.Services
                 .ReturnsAsync(cartItems);
 
             // Act
-            await _sut.CreateOrderFromCostumerCartAsync(costumerId);
+            await _sut.CreateOrderFromCostumerCartAsync(costumerId, CancellationToken.None);
 
             // Assert
             _orderRepositoryMock.Verify(x => x.AddAsync(
@@ -110,7 +110,7 @@ namespace Tests.Services
                 .ReturnsAsync((Costumer)null);
 
             // Act
-            Func<Task> act = () => _sut.CreateOrderFromCostumerCartAsync(costumerId);
+            Func<Task> act = () => _sut.CreateOrderFromCostumerCartAsync(costumerId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<ArgumentException>()
@@ -134,13 +134,49 @@ namespace Tests.Services
                 .ReturnsAsync(emptyCart);
 
             // Act
-            Func<Task> act = () => _sut.CreateOrderFromCostumerCartAsync(costumerId);
+            Func<Task> act = () => _sut.CreateOrderFromCostumerCartAsync(costumerId, CancellationToken.None);
 
             // Assert
             await act.Should().ThrowAsync<InvalidOperationException>()
                 .WithMessage("*Cart is empty*");
             _orderRepositoryMock.Verify(x => x.AddAsync(It.IsAny<Order>(), It.IsAny<CancellationToken>()), Times.Never);
             _orderRepositoryMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task GetAllOrderProductsByOrderId_WithValidOrderId_ShouldReturnOrderProducts()
+        {
+            // Arrange
+            var orderId = _autoFixture.Create<Guid>();
+            var expectedProducts = _autoFixture.CreateMany<OrderProductResponseDto>().ToList();
+
+            _orderProductRepositoryMock.Setup(x => x.GetByOrderIdAsync(orderId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedProducts);
+
+            // Act
+            var result = await _sut.GetAllOrderProductsByOrderId(orderId, CancellationToken.None);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedProducts);
+            _orderProductRepositoryMock.Verify(x => x.GetByOrderIdAsync(orderId, It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetAllOrderProductsByOrderId_WithNonExistentOrderId_ShouldReturnEmptyCollection()
+        {
+            // Arrange
+            var orderId = _autoFixture.Create<Guid>();
+            var emptyList = new List<OrderProductResponseDto>();
+
+            _orderProductRepositoryMock.Setup(x => x.GetByOrderIdAsync(orderId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(emptyList);
+
+            // Act
+            var result = await _sut.GetAllOrderProductsByOrderId(orderId, CancellationToken.None);
+
+            // Assert
+            result.Should().BeEmpty();
+            _orderProductRepositoryMock.Verify(x => x.GetByOrderIdAsync(orderId, It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
