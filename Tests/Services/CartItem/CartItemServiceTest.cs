@@ -5,6 +5,12 @@ using Domain.Repositories;
 using Domain.Services;
 using FluentAssertions;
 using Moq;
+using Moq.Language.Flow;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace Tests.Services
 {
@@ -190,6 +196,47 @@ namespace Tests.Services
                 .WithMessage("Quantity should'nt be negative");
             _cartItemRepositoryMock.Verify(x => x.UpdateAsync(It.IsAny<CartItem>(), CancellationToken.None), Times.Never);
             _cartItemRepositoryMock.Verify(x => x.SaveChangesAsync(CancellationToken.None), Times.Never);
+        }
+
+        [Fact]
+        public async Task GetAllCartItemsByCostumerIdAsync_WithValidCostumerId_ShouldReturnCartItems()
+        {
+            // Arrange
+            var costumerId = Guid.NewGuid();
+            var cartItems = _autoFixture.CreateMany<CartItem>(10).ToList();
+            var expectedResponse = cartItems.Select(ci => new CartItemResponseDto 
+            { 
+                Id = ci.Id,
+                ProductName = ci.ProductName,
+                ProductPrice = ci.ProductPrice,
+                Quantity = ci.Quantity
+            }).ToList();
+
+            _cartItemRepositoryMock.Setup(x => x.GetAllByCostumerIdAsync(costumerId, CancellationToken.None))
+                .ReturnsAsync(expectedResponse);
+
+            // Act
+            var result = await _sut.GetAllCartItemsByCostumerIdAsync(costumerId, CancellationToken.None);
+
+            // Assert
+            result.Should().BeEquivalentTo(expectedResponse);
+            _cartItemRepositoryMock.Verify(x => x.GetAllByCostumerIdAsync(costumerId, CancellationToken.None), Times.Once);
+        }
+
+        [Fact]
+        public async Task GetAllCartItemsByCostumerIdAsync_WithNonExistentCostumerId_ShouldReturnEmptyCollection()
+        {
+            // Arrange
+            var costumerId = Guid.NewGuid();
+            _cartItemRepositoryMock.Setup(x => x.GetAllByCostumerIdAsync(costumerId, CancellationToken.None))
+                .ReturnsAsync(new List<CartItemResponseDto>());
+
+            // Act
+            var result = await _sut.GetAllCartItemsByCostumerIdAsync(costumerId, CancellationToken.None);
+
+            // Assert
+            result.Should().BeEmpty();
+            _cartItemRepositoryMock.Verify(x => x.GetAllByCostumerIdAsync(costumerId, CancellationToken.None), Times.Once);
         }
 
         //TODO: Add theory tests

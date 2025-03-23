@@ -15,7 +15,7 @@ namespace Persistence.Repositories
             _dbSet = context.Set<CartItem>();
         }
 
-        public async Task<IEnumerable<CartItemResponseDto>> GetByCostumerIdAsync(Guid costumerId, CancellationToken cancellationToken)
+        public async Task<List<CartItemResponseDto>> GetAllByCostumerIdAsync(Guid costumerId, CancellationToken cancellationToken)
         {
             var query = from c in _dbSet
                         where c.CostumerId == costumerId

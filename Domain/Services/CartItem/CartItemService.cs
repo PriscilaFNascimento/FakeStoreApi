@@ -14,6 +14,11 @@ namespace Domain.Services
             this.costumerRepository = costumerRepository;
         }
 
+        public Task<IEnumerable<CartItemResponseDto>> GetAllCartItemsByCostumerIdAsync(Guid costumerIdAsync, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task CreateCartItemAsync(Guid userId, CreateCartItemDto request, CancellationToken cancellationToken)
         {
             //TODO: Implement domain validations and throw a domain exception
@@ -46,11 +51,6 @@ namespace Domain.Services
             }
 
             await _cartItemRepository.SaveChangesAsync(cancellationToken);
-        }
-
-        public Task<IEnumerable<CartItemResponseDto>> GetAllCartItemsByCostumerIdAsync(Guid costumerIdAsync, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task UpdateCartItemQuantityAsync(Guid cartItemId, int newQuantity, CancellationToken cancellationToken)
