@@ -64,10 +64,7 @@ namespace Tests.Services
             var costumer = _autoFixture.Create<Costumer>();
             var request = _autoFixture.Create<CreateCartItemDto>();
 
-            var existingItem = _autoFixture.Build<CartItem>()
-                .With(x => x.CostumerId, costumer.Id)
-                .With(x => x.ProductName, request.ProductName)
-                .Create();
+            var existingItem = new CartItem(costumer.Id, request.ProductName, _autoFixture.Create<decimal>());
 
             int oldQuantity = existingItem.Quantity;
 
@@ -113,10 +110,8 @@ namespace Tests.Services
         public async Task UpdateCartItemQuantityAsync_WithValidData_ShouldUpdateQuantity()
         {
             // Arrange
-            var cartItemId = Guid.NewGuid();
-            var cartItem = _autoFixture.Build<CartItem>()
-                .With(x => x.Id, cartItemId)
-                .Create();
+            var cartItem = _autoFixture.Create<CartItem>();
+            var cartItemId = cartItem.Id;
             int newQuantity = 5;
 
             _cartItemRepositoryMock.Setup(x => x.GetByIdAsync(cartItemId, CancellationToken.None))
@@ -137,10 +132,8 @@ namespace Tests.Services
         public async Task UpdateCartItemQuantityAsync_WithZeroQuantity_ShouldDeleteCartItem()
         {
             // Arrange
-            var cartItemId = Guid.NewGuid();
-            var cartItem = _autoFixture.Build<CartItem>()
-                .With(x => x.Id, cartItemId)
-                .Create();
+            var cartItem = _autoFixture.Create<CartItem>();
+            var cartItemId = cartItem.Id;
             int newQuantity = 0;
 
             _cartItemRepositoryMock.Setup(x => x.GetByIdAsync(cartItemId, CancellationToken.None))
@@ -180,10 +173,8 @@ namespace Tests.Services
         public async Task UpdateCartItemQuantityAsync_WithInvalidQuantity_ShouldThrowArgumentException(int invalidQuantity)
         {
             // Arrange
-            var cartItemId = Guid.NewGuid();
-            var cartItem = _autoFixture.Build<CartItem>()
-                .With(x => x.Id, cartItemId)
-                .Create();
+            var cartItem = _autoFixture.Create<CartItem>();
+            var cartItemId = cartItem.Id;
 
             _cartItemRepositoryMock.Setup(x => x.GetByIdAsync(cartItemId, CancellationToken.None))
                 .ReturnsAsync(cartItem);
