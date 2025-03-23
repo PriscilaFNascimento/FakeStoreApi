@@ -67,7 +67,7 @@ namespace Tests.Services
             // Arrange
             var costumer = _autoFixture.Create<Costumer>();
             var request = _autoFixture.Create<CreateCartItemDto>();
-
+            
             var existingItem = new CartItem(costumer.Id,
                 request.ProductId,
                 _autoFixture.Create<string>(),
