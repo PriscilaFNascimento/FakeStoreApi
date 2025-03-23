@@ -47,7 +47,7 @@ namespace Domain.Services
             }
             else
             {
-                existingItem.Quantity++;
+                existingItem.UpdateQuantity(existingItem.Quantity + 1);
                 await _cartItemRepository.UpdateAsync(existingItem, cancellationToken);
             }
 
@@ -70,7 +70,7 @@ namespace Domain.Services
             }
             else
             {
-                cartItem.Quantity = newQuantity;
+                cartItem.UpdateQuantity(newQuantity);
                 await _cartItemRepository.UpdateAsync(cartItem, cancellationToken);
             }
 

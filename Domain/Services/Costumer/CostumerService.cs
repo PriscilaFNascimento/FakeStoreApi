@@ -12,7 +12,7 @@ namespace Domain.Services
             _costumerRepository = costumerRepository;
         }
 
-        public async Task CreateOrUpdateCostumerAsync(CreateUpdateCostumerDto request, CancellationToken cancellationToken)
+        public async Task<CostumerResponseDto> CreateOrUpdateCostumerAsync(CreateUpdateCostumerDto request, CancellationToken cancellationToken)
         {
             //TODO: Implement domain validations and throw a domain exception
             //TODO: Add data annotations to the CreateUpdateCostumerDto instead of doing the validation here
@@ -28,11 +28,13 @@ namespace Domain.Services
             }
             else
             {
-                costumer.Name = request.Name;
+                costumer.UpdateName(request.Name);
                 await _costumerRepository.UpdateAsync(costumer, cancellationToken);
             }
 
             await _costumerRepository.SaveChangesAsync(cancellationToken);
+
+            return Costumer.ToResponseDto(costumer);
         }
     }
 }

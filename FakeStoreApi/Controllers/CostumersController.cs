@@ -25,8 +25,7 @@ namespace FakeStoreApi.Controllers
         {
             try
             {
-                await _costumerService.CreateOrUpdateCostumerAsync(request, cancellationToken);
-                return Ok();
+                return Ok(await _costumerService.CreateOrUpdateCostumerAsync(request, cancellationToken));
             }
             catch (ArgumentNullException ex)
             {

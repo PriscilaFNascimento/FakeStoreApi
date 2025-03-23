@@ -2,8 +2,8 @@
 {
     public abstract class BaseEntity
     {
-        public Guid Id { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public Guid Id { get; private set; }
+        public DateTime CreatedAt { get; private set; }
         public DateTime LastUpdatedAt { get; set; }
 
         public BaseEntity()
