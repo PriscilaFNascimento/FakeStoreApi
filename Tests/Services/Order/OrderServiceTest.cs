@@ -35,41 +35,41 @@ namespace Tests.Services
             _fixture.ResetMocks();
         }
 
-        //[Fact]
-        //public async Task GetAllOrdersByCostumerId_WithValidCostumerId_ShouldReturnOrders()
-        //{
-        //    // Arrange
-        //    var costumerId = _autoFixture.Create<Guid>();
-        //    var expectedOrders = _autoFixture.CreateMany<OrderResponseDto>().ToList();
+        [Fact]
+        public async Task GetAllOrdersByCostumerId_WithValidCostumerId_ShouldReturnOrders()
+        {
+            // Arrange
+            var costumerId = _autoFixture.Create<Guid>();
+            var expectedOrders = _autoFixture.CreateMany<OrderResponseDto>().ToList();
 
-        //    _orderRepositoryMock.Setup(x => x.GetAllByCostumerIdAsync(costumerId, It.IsAny<CancellationToken>()))
-        //        .ReturnsAsync(expectedOrders);
+            _orderRepositoryMock.Setup(x => x.GetAllByCostumerIdAsync(costumerId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedOrders);
 
-        //    // Act
-        //    var result = await _sut.GetAllOrdersByCostumerId(costumerId);
+            // Act
+            var result = await _sut.GetAllOrdersByCostumerId(costumerId);
 
-        //    // Assert
-        //    result.Should().BeEquivalentTo(expectedOrders);
-        //    _orderRepositoryMock.Verify(x => x.GetAllByCostumerIdAsync(costumerId, It.IsAny<CancellationToken>()), Times.Once);
-        //}
+            // Assert
+            result.Should().BeEquivalentTo(expectedOrders);
+            _orderRepositoryMock.Verify(x => x.GetAllByCostumerIdAsync(costumerId, It.IsAny<CancellationToken>()), Times.Once);
+        }
 
-        //[Fact]
-        //public async Task GetAllOrdersByCostumerId_WithNonExistentCostumerId_ShouldReturnEmptyCollection()
-        //{
-        //    // Arrange
-        //    var costumerId = _autoFixture.Create<Guid>();
-        //    var emptyList = new List<OrderResponseDto>();
+        [Fact]
+        public async Task GetAllOrdersByCostumerId_WithNonExistentCostumerId_ShouldReturnEmptyCollection()
+        {
+            // Arrange
+            var costumerId = _autoFixture.Create<Guid>();
+            var emptyList = new List<OrderResponseDto>();
 
-        //    _orderRepositoryMock.Setup(x => x.GetAllByCostumerIdAsync(costumerId, It.IsAny<CancellationToken>()))
-        //        .ReturnsAsync(emptyList);
+            _orderRepositoryMock.Setup(x => x.GetAllByCostumerIdAsync(costumerId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(emptyList);
 
-        //    // Act
-        //    var result = await _sut.GetAllOrdersByCostumerId(costumerId);
+            // Act
+            var result = await _sut.GetAllOrdersByCostumerId(costumerId);
 
-        //    // Assert
-        //    result.Should().BeEmpty();
-        //    _orderRepositoryMock.Verify(x => x.GetAllByCostumerIdAsync(costumerId, It.IsAny<CancellationToken>()), Times.Once);
-        //}
+            // Assert
+            result.Should().BeEmpty();
+            _orderRepositoryMock.Verify(x => x.GetAllByCostumerIdAsync(costumerId, It.IsAny<CancellationToken>()), Times.Once);
+        }
 
         [Fact]
         public async Task CreateOrderFromCostumerCartAsync_WithValidCostumerId_ShouldCreateOrder()

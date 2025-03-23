@@ -20,7 +20,7 @@ namespace Domain.Services
         }
         public Task<IEnumerable<OrderResponseDto>> GetAllOrdersByCostumerId(Guid costumerId, CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return _orderRepository.GetAllByCostumerIdAsync(costumerId, cancellationToken);
         }
 
         public async Task CreateOrderFromCostumerCartAsync(Guid costumerId, CancellationToken cancellationToken = default)
