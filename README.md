@@ -27,7 +27,7 @@ C# | .NET v8 | xUnit | PostgreSQL
 ## Estrutura do projeto
 Este projeto foi construído seguindo os preceitos da Arquitetura Limpa e DDD, e adotando uma estrutura de camadas. As camadas definidas para o projeto são:
 
-- Controller: Responsável por processar as requisições HTTPS recebidas, e enviá-las para os serviços.
+- FakeStoreApi: Camada que possui os controllers, e é responsável por processar as requisições HTTPS recebidas, e enviá-las para os serviços.
 - Domain: Concentra a lógica de negócio, e contém as entidades, serviços e interfaces do repositório da aplicação.
 - Persistence: Responsável pelas consultas no banco de dados através de querys criadas com o Entity Framework Core
 - Test: Concentra os testes unitários da aplicação.
