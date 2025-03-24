@@ -55,9 +55,10 @@ COPY --from=build /src/Persistence /src/Persistence
 COPY --from=build /src/FakeStoreApi /src/FakeStoreApi
 COPY --from=build /src/Tests /src/Tests
 
-# Copy startup script
-COPY FakeStoreApi/startup.sh .
-RUN chmod +x startup.sh
+# Copy startup script and fix line endings
+COPY ["FakeStoreApi/startup.sh", "/app/startup.sh"]
+RUN chmod +x /app/startup.sh && \
+    sed -i 's/\r$//' /app/startup.sh
 
 # Install netcat for database connection check
 RUN apt-get update && apt-get install -y netcat-openbsd && rm -rf /var/lib/apt/lists/*
@@ -65,4 +66,4 @@ RUN apt-get update && apt-get install -y netcat-openbsd && rm -rf /var/lib/apt/l
 # Add dotnet tools to PATH
 ENV PATH="${PATH}:/root/.dotnet/tools"
 
-ENTRYPOINT ["./startup.sh"]
+ENTRYPOINT ["/bin/bash", "/app/startup.sh"]
