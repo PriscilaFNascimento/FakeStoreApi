@@ -37,12 +37,12 @@ namespace FakeStoreApi.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<OrderProductResponseDto>>> GetOrderProductsByOrderId(
-            Guid customerId,
+            Guid orderId,
             CancellationToken cancellationToken)
         {
             try
             {
-                var orders = await _orderService.GetAllOrderProductsByOrderId(customerId, cancellationToken);
+                var orders = await _orderService.GetAllOrderProductsByOrderId(orderId, cancellationToken);
                 return Ok(orders);
             }
             catch (Exception ex)
