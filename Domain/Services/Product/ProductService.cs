@@ -41,7 +41,7 @@ namespace Domain.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/{id}", cancellationToken);
+                var response = await _httpClient.GetAsync($"/products/{id}", cancellationToken);
                 
                 if(response.IsSuccessStatusCode) 
                 {
